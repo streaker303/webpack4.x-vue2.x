@@ -1,4 +1,4 @@
-# vue2webts
+# webpack5.x+vue2.x
 
 ## Project setup
 ```
