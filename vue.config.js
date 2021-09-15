@@ -1,6 +1,6 @@
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production'
-        ? '/dist/'
+        ? './'
         : '/',
     transpileDependencies: [
         /[/\\]node_modules[/\\](.+?)?element-ui(.*)[/\\]src/,
