@@ -1,11 +1,11 @@
 const common = {
     state: {
         isCollapse: false,
-        stompClient:null,
-        stompClientDirll:null,
-        loginImg:'',
-        logoImg:'',
-        currentTheme: '',//white-theme
+        stompClient: null,
+        stompClientDirll: null,
+        loginImg: '',
+        logoImg: '',
+        currentTheme: '', // white-theme
         currentTabName: '列表内容',
         chatIsShow: false,
         hasChatAuthority: false
@@ -33,11 +33,11 @@ const common = {
             state.currentTabName = name
         },
         setChatShow: (state, val) => {
-            state.chatIsShow = val ? val : !state.chatIsShow
+            state.chatIsShow = val || !state.chatIsShow
         },
         setChatAuthority: (state, val) => {
             state.hasChatAuthority = val
-        },
+        }
     },
     actions: {
 

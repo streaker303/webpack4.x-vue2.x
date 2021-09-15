@@ -1,34 +1,34 @@
 <template>
-    <div id="app" :class="{'black':theme==='black-theme'}">
+    <div id="app">
         <router-view></router-view>
     </div>
 </template>
 
 <script>
 export default {
-    name: "App",
-    data () {
-        return {};
+    name: 'App',
+    data() {
+        return {}
     },
-    created () {
-        
+    created() {
+
     },
     methods: {
-		
+
     }
-};
+}
 </script>
 
 <style lang="scss">
 html,body{
-	height: 100%;
+    height: 100%;
 }
 #app {
-  min-height: 100%;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+    min-height: 100%;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
 }
 </style>

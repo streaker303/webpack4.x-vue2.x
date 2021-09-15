@@ -1,16 +1,12 @@
 
-import axios from 'axios';
-import {getAjax,getAjaxSome} from '@/utils/http';
+import request from '@/utils/server'
 
-//退出
+// 退出
 export const exit = (data) => {
-	return axios.request({
-		url: 'common/exit',
-		method: 'post',
-		params: data.queryData,
-		data: data.paramsData,
-	}).then(result => {
-		console.log(result)
-		return getAjaxSome(result);
-	})
+    return request({
+        url: 'common/exit',
+        method: 'post',
+        params: data.queryData,
+        data: data.paramsData
+    })
 }

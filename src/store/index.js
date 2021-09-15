@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: {
-		common
+        common
     },
     state: {},
     mutations: {

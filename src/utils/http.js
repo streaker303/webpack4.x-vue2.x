@@ -1,31 +1,22 @@
-import axios from 'axios';
-import router from '../router/index';
-import { Message, MessageBox } from 'element-ui';
-import { setsessionStorage ,removesessionStorage} from '../assets/js/public_fun.js';
-import store from '../store/index';
 
-// 全局的配置的默认值/defaults
-export let axios_config = () => {
-    axios.defaults.baseURL = 'api/';
-    axios.defaults.headers.post['Content-Type'] = 'application/json';
-    axios.defaults.timeout = 60000;
-};
-axios_config();
+import router from '../router/index'
+import { Message, MessageBox } from 'element-ui'
+import { setsessionStorage, removelocalStorage } from '@/assets/js/public_fun.js'
+import store from '@/store/index'
+
 export const getAjax = (result) => {
     return new Promise((resolve, reject) => {
-        if (typeof result.data.code !== 'undefined' && result.data.code == 1) {
-            resolve(result.data.data);
+        if (typeof result.code !== 'undefined' && result.code === 1) {
+            resolve(result.data)
         } else {
-            if (result.data.code == 2) {
-                //请求成功但流程不对
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
-            } else if (result.data.code == 9999) {
+            if (result.code === 2) {
+                // 请求成功但流程不对
+                Message({
+                    message: result.message,
+                    showClose: true,
+                    type: 'warning'
+                })
+            } else if (result.code === 9999) {
                 MessageBox.confirm('系统报错，点击查看详情?', '提示', {
                     confirmButtonText: '查看',
                     cancelButtonText: '取消',
@@ -33,133 +24,35 @@ export const getAjax = (result) => {
                     customClass: 'confirm-box'
                 })
                     .then(() => {
-                        setsessionStorage('errorInfo', result.data.message);
-                        router.push('/error');
+                        setsessionStorage('errorInfo', result.message)
+                        router.push('/error')
                     })
-                    .catch(() => {});
-            } else if (result.data.code == 9005) {
+                    .catch(() => {})
+            } else if (result.code === 9005) {
                 if (document.getElementsByClassName('el-message').length === 0) {
                     Message({
                         message: '登录已失效，请重新登录！',
+                        showClose: true,
                         type: 'warning'
-                    });
+                    })
                 }
-                removesessionStorage('currentPath')
-                store.commit('changeExit',true)
-                setTimeout(() => {
-					router.push('/login');
-                }, 1500);
-            } else {
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
-            }
-            reject(result.data);
-        }
-    });
-};
-export const getAjaxSome = (result) => {
-    return new Promise((resolve, reject) => {
-        if (typeof result.data.code !== 'undefined' && result.data.code == 1) {
-            resolve(result.data);
-        } else {
-            if (result.data.code == 2) {
-                //请求成功但流程不对
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
-            } else if (result.data.code == 9999) {
-                MessageBox.confirm('系统报错，点击查看详情?', '提示', {
-                    confirmButtonText: '查看',
-                    cancelButtonText: '取消',
-                    type: 'warning',
-                    customClass: 'confirm-box'
+                console.log(22222222222)
+                removelocalStorage('userInfo')
+                store.commit('switchUserInfo', '')
+                store.commit('switchLoginShow', {
+                    show: true,
+                    type: 0
                 })
-                    .then(() => {
-                        setsessionStorage('errorInfo', result.data.message);
-                        router.push('/error');
-                    })
-                    .catch(() => {});
-            } else if (result.data.code == 9005) {
-                if (document.getElementsByClassName('el-message').length === 0) {
-                    Message({
-                        message: '登录已失效，请重新登录！',
-                        type: 'warning'
-                    });
-                }
-                removesessionStorage('currentPath')
-                store.commit('changeExit',true)
-                setTimeout(() => {
-					router.push('/login');
-                }, 1500);
+                router.push('/')
             } else {
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
+                Message({
+                    message: result.message,
+                    showClose: true,
+                    type: 'warning'
+                })
             }
-            reject(result.data);
+            reject(result.data)
         }
-    });
-};
-export const getAjaxFile = result => {
-	// console.log(result)
-	return new Promise((resolve, reject) => {
-		if(result.status == 200 ) {
-			resolve(result.data);
-		} else {
-			if(result.data.code == 2){//请求成功但流程不对
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
-			}else if(result.data.code == 9999){
-				MessageBox.confirm('系统报错，点击查看详情?', '提示', {
-		          confirmButtonText: '查看',
-		          cancelButtonText: '取消',
-		          type: 'warning',
-		          customClass:'confirm-box'
-		        }).then(() => {
-		        	setsessionStorage('errorInfo', result.data.message)
-		          	router.push('/error')
-		        }).catch(() => {});
-			}else if(result.data.code == 9005){
-				if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-						message: '登录已失效，请重新登录！',
-						type: 'warning'
-					});
-				}
-                removesessionStorage('currentPath')
-                store.commit('changeExit',true)
-				setTimeout(()=>{
-					router.push('/login');
-				},1500)
-			}else{
-                if (document.getElementsByClassName('el-message').length === 0) {
-					Message({
-                        message: result.data.message,
-                        type: 'warning'
-                    });
-    
-				}
-				
-			}
-			reject(result.data);
-		}
-	})
+    })
 }
+
