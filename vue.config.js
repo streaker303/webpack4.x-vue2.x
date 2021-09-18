@@ -1,3 +1,24 @@
+const path = require('path')
+const SimpleProgressWebpackPlugin = require('simple-progress-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const isProduction = process.env.NODE_ENV === 'production'
+const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
+function resolve(dir) {
+    return path.join(__dirname, dir)
+}
+
+let pluginsArr = [
+    new SimpleProgressWebpackPlugin(),
+    new CompressionWebpackPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: productionGzipExtensions,
+        threshold: 10240,
+        minRatio: 0.8
+    })
+]
+
 module.exports = {
     publicPath: process.env.NODE_ENV === 'production'
         ? './'
@@ -32,6 +53,64 @@ module.exports = {
         /[/\\]node_modules[/\\](.+?)?vns-ui(.*)/
 
     ],
+    configureWebpack: config => {
+        let plugins = []
+        let module = {}
+        if (isProduction) {
+            plugins = [].concat(pluginsArr)
+
+            // 开启分离js
+            config.optimization = {
+                minimize: true,
+                minimizer: [
+                    new TerserPlugin({
+                        terserOptions: {
+                            ecma: undefined,
+                            warnings: false,
+                            parse: {},
+                            compress: {
+                                drop_console: true,
+                                drop_debugger: false,
+                                pure_funcs: ['console.log'] // 移除console
+                            }
+                        },
+                        // 代码压缩插件
+                        parallel: 4, // 开启并行压缩
+                        cache: true
+                    })
+                ]
+            }
+
+            // 取消webpack警告的性能提示
+            config.performance = {
+                hints: 'warning',
+                // 入口起点的最大体积
+                maxEntrypointSize: 1000000 * 500,
+                // 生成文件的最大体积
+                maxAssetSize: 10000000 * 1000,
+                // 只给出 js 文件的性能提示
+                assetFilter: function(assetFilename) {
+                    return assetFilename.endsWith('.js')
+                }
+            }
+        }
+
+        return isProduction ? { plugins, module } : { plugins }
+    },
+
+    css: {
+        sourceMap: process.env.NODE_ENV !== 'production',
+        extract: process.env.NODE_ENV === 'production' ? {
+            ignoreOrder: true
+        } : false
+    },
+    chainWebpack: config => {
+        config.resolve.alias
+            .set('@', resolve('src'))
+            .set('@mixins', resolve('src/mixins'))
+            .set('@store', resolve('src/store'))
+    },
+
     assetsDir: 'static',
     runtimeCompiler: true,
     productionSourceMap: false,
@@ -63,11 +142,5 @@ module.exports = {
             }
         }
     }
-    // css: {
-    //     loaderOptions: {
-    //         sass: {
-    //             prependData: `@import './src/assets/css/element-variables.scss';`
-    //         },
-    //     },
-    // },
+
 }
