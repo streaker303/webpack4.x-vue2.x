@@ -99,10 +99,7 @@ module.exports = {
     },
 
     css: {
-        sourceMap: process.env.NODE_ENV !== 'production',
-        extract: process.env.NODE_ENV === 'production' ? {
-            ignoreOrder: true
-        } : false
+        sourceMap: process.env.NODE_ENV !== 'production'
     },
     chainWebpack: config => {
         config.resolve.alias
