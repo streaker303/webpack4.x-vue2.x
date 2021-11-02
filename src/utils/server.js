@@ -12,29 +12,29 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
     (config) => {
-        const userInfo = getlocalStorage('userInfo')
-        if (userInfo) {
-            console.log('config', config)
-            if (config.url !== '/api/user-manage/loginUser' && config.url !== '/api/user-manage/register') {
-                config.headers.token = userInfo.token
-                let lastLoginTime = getlocalStorage('lastLoginTime')
-                console.log(new Date().getTime())
-                let now = new Date().getTime()
-                if (lastLoginTime) {
-                    if (now - lastLoginTime > 60 * 30 * 1000) {
-                        removelocalStorage('userInfo')
-                        store.commit('switchUserInfo', '')
-                        store.commit('switchLoginShow', {
-                            show: true,
-                            type: 0
-                        })
-                        router.push('/')
-                    } else {
-                        setlocalStorage('lastLoginTime', now)
-                    }
-                }
-            }
-        }
+        // const userInfo = getlocalStorage('userInfo')
+        // if (userInfo) {
+        //     console.log('config', config)
+        //     if (config.url !== '/api/user-manage/loginUser' && config.url !== '/api/user-manage/register') {
+        //         config.headers.token = userInfo.token
+        //         let lastLoginTime = getlocalStorage('lastLoginTime')
+        //         console.log(new Date().getTime())
+        //         let now = new Date().getTime()
+        //         if (lastLoginTime) {
+        //             if (now - lastLoginTime > 60 * 30 * 1000) {
+        //                 removelocalStorage('userInfo')
+        //                 store.commit('switchUserInfo', '')
+        //                 store.commit('switchLoginShow', {
+        //                     show: true,
+        //                     type: 0
+        //                 })
+        //                 router.push('/')
+        //             } else {
+        //                 setlocalStorage('lastLoginTime', now)
+        //             }
+        //         }
+        //     }
+        // }
         if (config.method === 'post' && config.headers['Content-Type']) {
             // eslint-disable-next-line no-self-assign
             config.headers['Content-Type'] = config.headers['Content-Type']

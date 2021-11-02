@@ -17,9 +17,28 @@ const router = new Router({
         ...common
     ]
 })
+
+// router.beforeEach((to, from, next) => {
+//     const userInfo = Vue.prototype.$getlocalStorage('userInfo')
+//     if (userInfo) {
+//         if (to.meta.title) {
+//             document.title = to.meta.title
+//         }
+//         next()
+//     } else {
+//         if (to.path === '/login') {
+//             next()
+//         } else {
+//             next({
+//                 path: '/login'
+//             })
+//         }
+//     }
+// })
+
 /* addRoutes的作用注入新的路由，而不是替换其他路由,需要先清空原来的路由*/
-router.selfaddRoutes = function(params) {
-    router.matcher = new Router().matcher
-    router.addRoutes(params)
-}
+// router.selfaddRoutes = function(params) {
+//     router.matcher = new Router().matcher
+//     router.addRoutes(params)
+// }
 export default router

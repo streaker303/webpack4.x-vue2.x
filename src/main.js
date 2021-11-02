@@ -9,6 +9,7 @@ import './assets/css/element-variables.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 import VNSUI from 'vns-ui' // 引入组件库
 import 'vns-ui/packages/theme-default/lib/index.css'
+import './icon/iconfont.css'
 
 import store from './store/index.js'
 import Debounce from './assets/js/utils.js'
