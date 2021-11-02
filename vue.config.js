@@ -4,12 +4,16 @@ const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const isProduction = process.env.NODE_ENV === 'production'
 const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
+const HappyPack = require('happypack')
+const { HashedModuleIdsPlugin } = require('webpack')
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
 
 let pluginsArr = [
     new SimpleProgressWebpackPlugin(),
+    new HardSourceWebpackPlugin(),
     new CompressionWebpackPlugin({
         filename: '[path].gz[query]',
         algorithm: 'gzip',
@@ -61,6 +65,48 @@ module.exports = {
 
             // 开启分离js
             config.optimization = {
+                runtimeChunk: 'single',
+                /* splitChunks: {
+                    chunks: 'all', // 表明选择哪些 chunk 进行优化。通用设置，可选值：all/async/initial。设置为 all 意味着 chunk 可以在异步和非异步 chunk 之间共享。
+                    minSize: 1000 * 60, // 允许新拆出 chunk 的最小体积
+                    maxAsyncRequests: 10, // 每个异步加载模块最多能被拆分的数量
+                    maxInitialRequests: 10, // 每个入口和它的同步依赖最多能被拆分的数量
+                    enforceSizeThreshold: 50000, // 强制执行拆分的体积阈值并忽略其他限制
+                    cacheGroups: {
+                        libs: { // 第三方库
+                            name: 'chunk-libs',
+                            test: /[\\/]node_modules[\\/]/, // 请注意'[\\/]'的用法，是具有跨平台兼容性的路径分隔符
+                            priority: 10 // 优先级，执行顺序就是权重从高到低
+                        // chunks: 'initial' // 只打包最初依赖的第三方
+                        },
+                        elementUI: { // 把 elementUI 单独分包
+                            name: 'chunk-elementUI',
+                            test: /[\\/]node_modules[\\/]element-ui[\\/]/,
+                            priority: 20 // 权重必须比 libs 大，不然会被打包进 libs 里
+                        },
+                        commons: {
+                            name: 'chunk-commons',
+                            minChunks: 2, // 拆分前，这个模块至少被不同 chunk 引用的次数
+                            priority: 0,
+                            reuseExistingChunk: true
+                        },
+                        svgIcon: {
+                            name: 'chunk-svgIcon',
+                            // 函数匹配示例，把 svg 单独拆出来
+                            test(module) {
+                                // `module.resource` 是文件的绝对路径
+                                // 用`path.sep` 代替 / or \，以便跨平台兼容
+                                // const path = require('path') // path 一般会在配置文件引入，此处只是说明 path 的来源，实际并不用加上
+                                return (
+                                    module.resource &&
+                                    module.resource.endsWith('.svg') &&
+                                    module.resource.includes(`${path.sep}icons${path.sep}`)
+                                )
+                            },
+                            priority: 30
+                        }
+                    }
+                },*/
                 minimize: true,
                 minimizer: [
                     new TerserPlugin({
@@ -106,6 +152,20 @@ module.exports = {
             .set('@', resolve('src'))
             .set('@mixins', resolve('src/mixins'))
             .set('@store', resolve('src/store'))
+        config.plugin('HappyPack').use(HappyPack, [
+            {
+                loaders: [
+                    {
+                        loader: 'babel-loader?cacheDirectory=true'
+                    }
+                ]
+            }
+        ])
+        // webpack 会默认给commonChunk打进chunk-vendors，所以需要对webpack的配置进行delete
+        config.optimization.delete('splitChunks')
+        // config
+        //     .plugin('webpack-bundle-analyzer')
+        //     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
     },
 
     assetsDir: 'static',
@@ -114,7 +174,7 @@ module.exports = {
     outputDir: 'dist',
     devServer: {
         host: 'localhost',
-        port: 3001,
+        port: 3000,
         https: false,
         hotOnly: false,
         proxy: { // 设置代理
