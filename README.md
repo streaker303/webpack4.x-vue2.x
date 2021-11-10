@@ -17,9 +17,6 @@ import 'regenerator-runtime/runtime'
 ```
 - vue.config.js
 ```
-transpileDependencies: process.env.NODE_ENV === 'development' ? ['*'] : []
-
-
 transpileDependencies: [
         /[/\\]node_modules[/\\](.+?)?element-ui(.*)[/\\]src/,
         /[/\\]node_modules[/\\](.+?)?element-ui(.*)[/\\]package/,
