@@ -7,7 +7,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 ```
-- package.json 
+- package.json
 ```
 "browserslist": [
     "> 1%",
@@ -50,5 +50,8 @@ transpileDependencies: [
     ]
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 其他
+```
+// 防止使用 dart-css 报警告错误
+cnpm i sass@~1.32.6 -D
+```
