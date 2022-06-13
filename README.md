@@ -1,4 +1,4 @@
-# webpack5.x+vue2.x+eslint
+# webpack4.x+vue2.x+eslint
 ### cli4配置
 - [配置地址](https://github.com/staven630/vue-cli4-config)
 ### 兼容IE
